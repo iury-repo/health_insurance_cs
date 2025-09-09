@@ -56,6 +56,19 @@ A health insurance model to get information about client interebuy a new insuran
     │
     └── plots.py                <- Code to create visualizations
 ```
+## Notebook Name Convention
 
+```
+Notebook name example: 0.01-mni-short-description.ipynb
+
+    0 - Data wrangling / description - often includes cleaning, feature creation and initial diagnostics about the raw dataset. Writes data to data/processed or data/interim
+    1 - Data exploration - often just for exploratory work and initial diagnostic about the raw dataset.
+    2 - Visualizations - often writes publication-ready viz to reports
+    3 - Modeling - training machine learning models
+    4 - Publication - Notebooks that get turned directly into reports
+
+* mni - Your initials (My Name Initials); this is helpful for knowing who created the notebook and prevents collisions from people working in the same notebook.
+* short-description - A description of what the notebook covers, e.g. (data-cleaning, visualizations, fine-tuning, etc)
+```
 --------
 
