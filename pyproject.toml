@@ -16,6 +16,7 @@ classifiers = [
     
 ]
 dependencies = [
+    "boruta>=0.4.3",
     "category-encoders>=2.8.1",
     "ipython",
     "jupyterlab",
