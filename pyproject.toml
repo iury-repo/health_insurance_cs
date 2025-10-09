@@ -18,6 +18,7 @@ classifiers = [
 dependencies = [
     "boruta>=0.4.3",
     "category-encoders>=2.8.1",
+    "imbalanced-learn>=0.14.0",
     "ipython",
     "jupyterlab",
     "loguru",
