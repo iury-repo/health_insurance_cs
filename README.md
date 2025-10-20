@@ -63,8 +63,8 @@ Notebook name example: 0.01-mni-short-description.ipynb
 
     0 - Data wrangling / description - often includes cleaning, feature creation and initial diagnostics about the raw dataset. Writes data to data/processed or data/interim
     1 - Data exploration - often just for exploratory work and initial diagnostic about the raw dataset.
-    2 - Visualizations - often writes publication-ready viz to reports
-    3 - Modeling - training machine learning models
+    2 - Modeling - training machine learning models
+    3 - Visualizations - often writes publication-ready viz to reports
     4 - Publication - Notebooks that get turned directly into reports
 
 * mni - Your initials (My Name Initials); this is helpful for knowing who created the notebook and prevents collisions from people working in the same notebook.
