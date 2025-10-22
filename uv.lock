@@ -3,6 +3,19 @@ revision = 3
 requires-python = "==3.10.*"
 
 [[package]]
+name = "aggdraw"
+version = "1.3.19"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/03/f1/031b1205f1f580c41566a509166f7097cbff13adffd0c1080b0b3e0ea4ae/aggdraw-1.3.19.tar.gz", hash = "sha256:e78a23b29fb66a079832bae5604f082bfa4ff9d5d469c77506a67253d7fee7db", size = 260414, upload-time = "2024-09-11T16:59:53.445Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/0e/69/2a44b9be67e0446b3b72f8d1d7f8b0ea944dfc8e25df9063c2f6d4b54b1a/aggdraw-1.3.19-cp310-cp310-macosx_14_0_arm64.whl", hash = "sha256:cfbb072ee0a6de6cb6a782724df6e8ab9648d9566fb033118dcebbe9dc06326e", size = 479545, upload-time = "2024-09-11T16:59:16.958Z" },
+    { url = "https://files.pythonhosted.org/packages/43/6a/7aa0f452365db4e25bbee9db1239ef32414a857a92be648ad961583994c8/aggdraw-1.3.19-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:789fc905d0bad232fe4d783ee115ed34a1c0904957dc384fc5c45a40df517975", size = 972403, upload-time = "2024-09-11T16:59:18.672Z" },
+    { url = "https://files.pythonhosted.org/packages/3e/17/76bde7b33f617f5acdfa342887443bfba88032bf7eeafeb49b3546fa8617/aggdraw-1.3.19-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:30d783a7bfb2ff2ac43ce080ff18fb5df8b96ad4c0988c88324037855310e665", size = 993676, upload-time = "2024-09-11T16:59:20.203Z" },
+    { url = "https://files.pythonhosted.org/packages/8a/88/81b11e8cdfa361fdabcbd4bfe45eea9bfec7835c7a47cfc3d3d2f733a22d/aggdraw-1.3.19-cp310-cp310-win_amd64.whl", hash = "sha256:4483393bc69392287d1c8159a0c475c51ce2f687b1099d686a3c5b2028e25b0f", size = 44886, upload-time = "2024-09-11T16:59:21.998Z" },
+    { url = "https://files.pythonhosted.org/packages/fd/e4/f790cc3af3310b48cb29614b1dc11fd1fb1a01b66b552b44915be36015b7/aggdraw-1.3.19-cp310-cp310-win_arm64.whl", hash = "sha256:67f28103a619ebf7068421dfee7bd3d6cf2528887bfb5d16ecf952da10fd6f93", size = 34130, upload-time = "2024-09-11T16:59:23.016Z" },
+]
+
+[[package]]
 name = "anyio"
 version = "4.10.0"
 source = { registry = "https://pypi.org/simple" }
@@ -474,7 +487,7 @@ dependencies = [
     { name = "python-dotenv" },
     { name = "ruff" },
     { name = "scikit-learn" },
-    { name = "scikit-plot" },
+    { name = "scikit-plots" },
     { name = "seaborn" },
     { name = "tqdm" },
     { name = "typer" },
@@ -498,7 +511,7 @@ requires-dist = [
     { name = "python-dotenv" },
     { name = "ruff" },
     { name = "scikit-learn" },
-    { name = "scikit-plot", specifier = ">=0.3.7" },
+    { name = "scikit-plots", specifier = ">=0.4.0.post5" },
     { name = "seaborn", specifier = ">=0.13.2" },
     { name = "tqdm" },
     { name = "typer" },
@@ -1627,18 +1640,31 @@ wheels = [
 ]
 
 [[package]]
-name = "scikit-plot"
-version = "0.3.7"
+name = "scikit-plots"
+version = "0.4.0.post5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
+    { name = "aggdraw", marker = "sys_platform != 'emscripten'" },
     { name = "joblib" },
     { name = "matplotlib" },
+    { name = "numpy" },
+    { name = "pandas" },
+    { name = "pillow" },
     { name = "scikit-learn" },
     { name = "scipy" },
+    { name = "threadpoolctl" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/58/66/ad1c1493946cac000d3f585e9ce5e1434140b6947fd3829d22a766933e53/scikit-plot-0.3.7.tar.gz", hash = "sha256:2c7948817fd2dc06879cfe3c1fdde56a8e71fa5ac626ffbe79f043650baa6242", size = 28615, upload-time = "2018-08-19T12:18:50.524Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/7a/e5/9043163fb6a8eed61cd71a229a6718d2caf36abb544dc4f084f90ad4fe75/scikit_plots-0.4.0.post5.tar.gz", hash = "sha256:5dbf298d59cadcbb6ace0b125fbb6c78ad1f15e02376dcedb6c28d9e419374fa", size = 34022077, upload-time = "2025-10-08T11:31:00.652Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7c/47/32520e259340c140a4ad27c1b97050dd3254fdc517b1d59974d47037510e/scikit_plot-0.3.7-py3-none-any.whl", hash = "sha256:6b3d529800b32a899c54dc5761a93c63cbff482b1889a4afee57dd219f3ef0c3", size = 33679, upload-time = "2018-08-19T12:18:46.947Z" },
+    { url = "https://files.pythonhosted.org/packages/14/21/1a587dff34ead9f576af3d5e386ab8de487482beba042de3eba5bbf61016/scikit_plots-0.4.0.post5-cp310-cp310-macosx_10_14_x86_64.whl", hash = "sha256:81a2baffee7835c2371a0c69f5ea71f8aa0368441ba1275e0378196098367851", size = 2810052, upload-time = "2025-10-08T11:29:14.388Z" },
+    { url = "https://files.pythonhosted.org/packages/ac/d0/3434b2b035f2ed4de6cc3a943fef110655364b4e2f710512b413d56cdb2a/scikit_plots-0.4.0.post5-cp310-cp310-macosx_12_0_arm64.whl", hash = "sha256:f3d1cde17cd6be96b78dc4a3e1bf5fab9249ecd4f39478b8793c6b7c3034bb72", size = 2800997, upload-time = "2025-10-08T11:29:16.882Z" },
+    { url = "https://files.pythonhosted.org/packages/6f/d3/37a4c4fc6df4b5ecff6fc615e2c3d40acd7943ffdc4e4cafc75199da1d8e/scikit_plots-0.4.0.post5-cp310-cp310-macosx_14_0_arm64.whl", hash = "sha256:372840b7a83af0956af33a0eba44b91d1e747537896985013c026642f0be2576", size = 2800827, upload-time = "2025-10-08T11:29:18.509Z" },
+    { url = "https://files.pythonhosted.org/packages/ee/35/7b99cbb3638d8f9f5b74c8708cd1575a6b15bb62e8b72cc872ebd3b12e8e/scikit_plots-0.4.0.post5-cp310-cp310-macosx_14_0_x86_64.whl", hash = "sha256:9da8553bcc9c74758e3a59adcb9bd2ea56b33198c0c521b2178ad242c79415df", size = 2811198, upload-time = "2025-10-08T11:29:20.761Z" },
+    { url = "https://files.pythonhosted.org/packages/ae/c1/f9557ce47d1967c37527e0e1b84348d19bb7f6acd0983ac9e8b3d925d860/scikit_plots-0.4.0.post5-cp310-cp310-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:6e430d7bc1a12eac9bb7fa8c59dede43c2a90cbd8c176b664b806aa6f8587a12", size = 2861744, upload-time = "2025-10-08T11:29:22.468Z" },
+    { url = "https://files.pythonhosted.org/packages/b8/8a/e6cc193c07514029832ccfde6203350a86d7413f04ba12b0f3116f8a4719/scikit_plots-0.4.0.post5-cp310-cp310-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:08ba2883764ecadfed409583903420f9380a74cdc90c2f26ea6e6309d1068cbd", size = 2868238, upload-time = "2025-10-08T11:29:24.323Z" },
+    { url = "https://files.pythonhosted.org/packages/4c/24/23cab10b9e65f82568b339210e72e59d3dbd245ed5c46d234335a7a8df2b/scikit_plots-0.4.0.post5-cp310-cp310-musllinux_1_2_aarch64.whl", hash = "sha256:96c10f562d11014ef9bca3ff1338c233852f0ce663dc912f1d410a642ce0479e", size = 3845235, upload-time = "2025-10-08T11:29:26.4Z" },
+    { url = "https://files.pythonhosted.org/packages/d5/89/100004a44c1b11c6491af7f1178c9f97b6b9d9ed467106cef5cd63d88089/scikit_plots-0.4.0.post5-cp310-cp310-musllinux_1_2_x86_64.whl", hash = "sha256:7a34749b54d960b637347afe4550a2cea575c9a0c857deb9df56ca9dc86c10c6", size = 3903507, upload-time = "2025-10-08T11:29:28.073Z" },
+    { url = "https://files.pythonhosted.org/packages/5b/59/d2b7d08434059e0854ed7d6a12bdf4a3767c18dae38a4b46b98b54003d77/scikit_plots-0.4.0.post5-cp310-cp310-win_amd64.whl", hash = "sha256:b18a11f254b569e98a36bd427bdba423ec7f1487824ece5f459ead3ed2fa6c77", size = 3013337, upload-time = "2025-10-08T11:29:29.648Z" },
 ]
 
 [[package]]
