@@ -37,15 +37,15 @@ from insurance_classifier.config import PROCESSED_DATA_DIR, RAW_DATA_DIR
 
 def DataPreprocessing(df):
 
+     # Change string entries to snakecase
+    for col in df.select_dtypes(exclude=['int64','float64', 'datetime64[ns]']).columns:
+        df[col] = df[col].str.lower()
+
     # Rename vehicle_age categorie
     df['vehicle_age'] = df['vehicle_age'].map({'> 2 Years': 'over_2_years',
                                                         '1-2 Year': '1_to_2_years',
                                                         '< 1 Year': 'under_1_year'
                                                         })
-
-    # Change string entries to snakecase
-    for col in df.select_dtypes(exclude=['int64','float64', 'datetime64[ns]']).columns:
-        df[col] = df[col].str.lower()
 
     # Encoding -----
 
