@@ -1,6 +1,7 @@
 import typer
 import pandas as pd
 import numpy as np
+import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
 import category_encoders as ce
@@ -35,52 +36,54 @@ from insurance_classifier.config import PROCESSED_DATA_DIR, RAW_DATA_DIR
 #     app()
 
 
-def DataPreprocessing(df):
-    
-    # Change column names to snakecase
-    df.columns = [col.lower().replace(' ','_') for col in df.columns]
+class DataPreprocessor(object):
 
-    # Change string entries to snakecase
-    for col in df.select_dtypes(exclude=['int64','float64', 'datetime64[ns]']).columns:
-        df[col] = df[col].str.lower()
+    def __init__(self):
+        self.cwd = Path.cwd()
+        self.age_scaler =                   joblib.load(open(self.cwd /'parameters/age_scaler.joblib', 'rb')) 
+        self.annual_premium_scaler =        joblib.load(open(self.cwd /'parameters/annual_premium_scaler.joblib', 'rb'))
+        self.vintage_scaler =               joblib.load(open(self.cwd /'parameters/vintage_scaler.joblib', 'rb'))
+        self.region_code_encoder =          joblib.load(open(self.cwd /'parameters/region_code_encoder.joblib', 'rb'))               
+        
+    def feature_engineering(self, df):  
+          
+        # Change column names to snakecase
+        df.columns = [col.lower().replace(' ','_') for col in df.columns]
 
-    # Rename vehicle_age categorie
-    df['vehicle_age'] = df['vehicle_age'].map({'> 2 Years': 'over_2_years',
-                                                        '1-2 Year': '1_to_2_years',
-                                                        '< 1 Year': 'under_1_year'
-                                                        })
+        # Rename vehicle_age categories
+        df['vehicle_age'] = df['vehicle_age'].map({'> 2 Years': 'over_2_years',
+                                                            '1-2 Year': '1_to_2_years',
+                                                            '< 1 Year': 'under_1_year'
+                                                            })
 
-    # Encoding -----
+        # Change string entries to snakecase
+        for col in df.select_dtypes(exclude=['int64','float64', 'datetime64[ns]']).columns:
+            df[col] = df[col].str.lower()
 
-    # One-Hot encoding
-    df = pd.get_dummies(df, columns= ['gender'], prefix= 'gender', dtype=int)
+        return df
 
-    # Target encoding (James-Stein) 
-    tg_enc_region_code = ce.JamesSteinEncoder(cols=['region_code'])
-    df['region_code'] = tg_enc_region_code.fit_transform(X= df[['region_code']])
+    def data_preparation(self, df):
+        # One-Hot encoding
+        df = pd.get_dummies(df, columns= ['gender'], prefix= 'gender', dtype=int)
 
-    # Label encoding
-    df['vehicle_damage'] = df['vehicle_damage'].map({'yes':1,'no':0})
+        # Target encoding (James-Stein) 
+        df['region_code'] = self.region_code_encoder.fit_transform(X= df[['region_code']])
 
-    # One-Hot encoding
-    df = pd.get_dummies(df, columns= ['vehicle_age'], prefix= 'vehicle_age', dtype=int)
+        # Label encoding
+        df['vehicle_damage'] = df['vehicle_damage'].map({'yes':1,'no':0})
 
-    # Frequency encoding
-    fe_policy_sales_channel = df['policy_sales_channel'].value_counts(normalize=True)
-    df['policy_sales_channel'] = df['policy_sales_channel'].map(fe_policy_sales_channel)
+        # One-Hot encoding
+        df = pd.get_dummies(df, columns= ['vehicle_age'], prefix= 'vehicle_age', dtype=int)
 
-    # Rescaling -----
+        # Frequency encoding
+        fe_policy_sales_channel = df['policy_sales_channel'].value_counts(normalize=True)
+        df['policy_sales_channel'] = df['policy_sales_channel'].map(fe_policy_sales_channel)
 
-    mms_age = MinMaxScaler()
-    mms_vintage = MinMaxScaler()
+        # Rescaling -----
+        df['age'] = self.age_scaler.fit_transform(df[['age']].values)
+        df['vintage'] = self.vintage_scaler.fit_transform(df[['vintage']].values)
 
-    df['age'] = mms_age.fit_transform(df[['age']].values)
-    df['vintage'] = mms_vintage.fit_transform(df[['vintage']].values)
+        # Standardization -----
+        df['annual_premium'] = self.annual_premium_scaler.fit_transform(df[['annual_premium']].values)
 
-    # Standardization -----
-
-    # annual_premium
-    ss = StandardScaler()
-    df['annual_premium'] = ss.fit_transform(df[['annual_premium']].values)
-
-    return df
+        return df
