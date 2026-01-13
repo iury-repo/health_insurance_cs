@@ -36,8 +36,11 @@ from insurance_classifier.config import PROCESSED_DATA_DIR, RAW_DATA_DIR
 
 
 def DataPreprocessing(df):
+    
+    # Change column names to snakecase
+    df.columns = [col.lower().replace(' ','_') for col in df.columns]
 
-     # Change string entries to snakecase
+    # Change string entries to snakecase
     for col in df.select_dtypes(exclude=['int64','float64', 'datetime64[ns]']).columns:
         df[col] = df[col].str.lower()
 
