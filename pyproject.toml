@@ -20,6 +20,7 @@ dependencies = [
     "category-encoders>=2.8.1",
     "imbalanced-learn>=0.14.0",
     "ipython",
+    "joblib>=1.5.2",
     "jupyterlab",
     "loguru",
     "matplotlib",
