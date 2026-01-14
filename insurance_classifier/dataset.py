@@ -39,11 +39,10 @@ from insurance_classifier.config import PROCESSED_DATA_DIR, RAW_DATA_DIR
 class DataPreprocessor(object):
 
     def __init__(self):
-        self.cwd = Path.cwd()
-        self.age_scaler =                   joblib.load(open(self.cwd /'parameters/age_scaler.joblib', 'rb')) 
-        self.annual_premium_scaler =        joblib.load(open(self.cwd /'parameters/annual_premium_scaler.joblib', 'rb'))
-        self.vintage_scaler =               joblib.load(open(self.cwd /'parameters/vintage_scaler.joblib', 'rb'))
-        self.region_code_encoder =          joblib.load(open(self.cwd /'parameters/region_code_encoder.joblib', 'rb'))               
+        self.age_scaler =                   joblib.load(open('../parameters/age_scaler.joblib', 'rb')) 
+        self.annual_premium_scaler =        joblib.load(open('../parameters/annual_premium_scaler.joblib', 'rb'))
+        self.vintage_scaler =               joblib.load(open('../parameters/vintage_scaler.joblib', 'rb'))
+        self.region_code_encoder =          joblib.load(open('../parameters/region_code_james_stein.joblib', 'rb'))               
         
     def feature_engineering(self, df):  
           
@@ -67,7 +66,7 @@ class DataPreprocessor(object):
         df = pd.get_dummies(df, columns= ['gender'], prefix= 'gender', dtype=int)
 
         # Target encoding (James-Stein) 
-        df['region_code'] = self.region_code_encoder.fit_transform(X= df[['region_code']])
+        df['region_code'] = self.region_code_encoder.transform(X= df[['region_code']])
 
         # Label encoding
         df['vehicle_damage'] = df['vehicle_damage'].map({'yes':1,'no':0})
