@@ -28,6 +28,8 @@ dependencies = [
     "mkdocs",
     "notebook",
     "numpy",
+    "optuna>=4.7.0",
+    "optuna-dashboard>=0.20.0",
     "pandas",
     "pip",
     "python-dotenv",
