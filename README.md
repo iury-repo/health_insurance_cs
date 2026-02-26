@@ -18,6 +18,11 @@ A health insurance model to get information about client interebuy a new insuran
 
 ## Model Performance
 
+All models cumulative gain             | All models lift
+:-------------------------:|:-------------------------:
+![](https://github.com/iury-repo/health_insurance_cs/blob/main/reports/figures/resampled_cumgain.png)  |  ![](https://github.com/iury-repo/health_insurance_cs/blob/main/reports/figures/resampled_lift.png)
+
+
 ## Business Performance
 
 ## Conclusion
