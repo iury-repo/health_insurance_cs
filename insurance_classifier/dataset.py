@@ -1,17 +1,5 @@
-import typer
-import pandas as pd
-import numpy as np
 import joblib
-import matplotlib.pyplot as plt
-import seaborn as sns
-import category_encoders as ce
-
-from pathlib import Path
-from loguru import logger
-from tqdm import tqdm
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
-from insurance_classifier.config import PROCESSED_DATA_DIR, RAW_DATA_DIR
-
+import pandas as pd
 
 # app = typer.Typer()
 
@@ -85,4 +73,17 @@ class DataPreprocessor(object):
         # Standardization -----
         df['annual_premium'] = self.annual_premium_scaler.fit_transform(df[['annual_premium']].values)
 
-        return df
+        # Feature selection
+        features_selected = ['vintage',
+                  'annual_premium',
+                  'age',
+                  'region_code',
+                  'vehicle_damage',
+                  'policy_sales_channel',
+                  'previously_insured']
+
+        return df[features_selected]
+    
+    
+    
+
