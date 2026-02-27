@@ -47,10 +47,11 @@ The strategy to propose a solution through machine learn was guided by the relia
 | Vintage               | Number of days the customer has been associated with the company           |
 | Response              | 1: Customer is interested, 0: Customer is not interested                   |
 
- With 381109 rows.
+ With 381109 rows 0 missing values.
 
- Looking at the response distribution we can easily notice that the dataset is highly imbalanced, with only 12.25% of the responses being positive. So to deal with this imbalance, we needed to make some decitions before we get to modeling steps.
+ Looking at the response distribution we can immedeatly notice that the dataset is highly imbalanced, with only 12.3% of the responses being positive. So to deal with this imbalance, we needed to make some decitions when we get to the modeling step.
 
+ <img src="https://raw.githubusercontent.com/iury-repo/health_insurance_cs/main/reports/figures/class_distrib.png" width="300" align='center' class="center"/>
 
 
 ## Useful Insights
