@@ -1,0 +1,35 @@
+paths:
+  parameters_dir: parameters/  
+  raw_data: data/raw/
+  processed_data: data/processed/
+  model_dir: models/
+
+model:
+  type: XGBoost
+  params:
+    n_estimators: 654
+    max_depth: 10
+    learning_rate: 0.0928676578481242
+    max_leaves: 100
+    subsample: 0.6843881044357649
+    colsample_bytree: 0.9698823594112738
+    gamma: 0.979678428177832
+    min_child_weight: 6.951405780464861
+
+artifacts:
+  age_scaler: age_scaler.joblib
+  annual_premium_scaler: annual_premium_scaler.joblib
+  vintage_scaler: vintage_scaler.joblib
+  region_code_encoder: region_code_james_stein.joblib
+
+features:
+  target: response
+  selected_features:
+    - vintage
+    - annual_premium
+    - age
+    - region_code
+    - vehicle_damage
+    - policy_sales_channel
+    - previously_insured
+
