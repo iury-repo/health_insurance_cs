@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import joblib
 import pandas as pd
 
@@ -26,11 +28,14 @@ import pandas as pd
 
 class DataPreprocessor(object):
 
-    def __init__(self):
-        self.age_scaler =                   joblib.load(open('../parameters/age_scaler.joblib', 'rb')) 
-        self.annual_premium_scaler =        joblib.load(open('../parameters/annual_premium_scaler.joblib', 'rb'))
-        self.vintage_scaler =               joblib.load(open('../parameters/vintage_scaler.joblib', 'rb'))
-        self.region_code_encoder =          joblib.load(open('../parameters/region_code_james_stein.joblib', 'rb'))               
+    def __init__(self, config):
+        self.config = config
+        base_path = Path(config['paths']['parameters_dir'])
+
+        self.age_scaler =                   joblib.load(base_path / config['artifacts']['age_scaler']) 
+        self.annual_premium_scaler =        joblib.load(base_path / config['artifacts']['annual_premium_scaler'])
+        self.vintage_scaler =               joblib.load(base_path / config['artifacts']['vintage_scaler'])
+        self.region_code_encoder =          joblib.load(base_path / config['artifacts']['region_code_encoder'])               
         
     def feature_engineering(self, df):  
           
@@ -67,22 +72,13 @@ class DataPreprocessor(object):
         df['policy_sales_channel'] = df['policy_sales_channel'].map(fe_policy_sales_channel)
 
         # Rescaling -----
-        df['age'] = self.age_scaler.fit_transform(df[['age']].values)
-        df['vintage'] = self.vintage_scaler.fit_transform(df[['vintage']].values)
+        df['age'] = self.age_scaler.transform(df[['age']].values)
+        df['vintage'] = self.vintage_scaler.transform(df[['vintage']].values)
 
         # Standardization -----
-        df['annual_premium'] = self.annual_premium_scaler.fit_transform(df[['annual_premium']].values)
+        df['annual_premium'] = self.annual_premium_scaler.transform(df[['annual_premium']].values)
 
-        # Feature selection
-        features_selected = ['vintage',
-                  'annual_premium',
-                  'age',
-                  'region_code',
-                  'vehicle_damage',
-                  'policy_sales_channel',
-                  'previously_insured']
-
-        return df[features_selected]
+        return df[self.config['features']['selected_features']]
     
     
     

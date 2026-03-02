@@ -47,10 +47,29 @@ The strategy to propose a solution through machine learn was guided by the relia
 | Vintage               | Number of days the customer has been associated with the company           |
 | Response              | 1: Customer is interested, 0: Customer is not interested                   |
 
- With 381109 rows.
+With 381109 rows 0 missing values.
 
- Looking at the response distribution we can easily notice that the dataset is highly imbalanced, with only 12.25% of the responses being positive. So to deal with this imbalance, we needed to make some decitions before we get to modeling steps.
+<table >
+<tr>
+<td width="65%" valign="top">
 
+Looking at the response distribution we can immediately notice that the dataset is highly imbalanced, with only 12.3% of the responses being positive (class 1). So to deal with this imbalance, it was necessary treat those problems before we get to the modeling step.
+
+
+</td>
+<td width="35%" valign="top">
+
+ <img src="https://raw.githubusercontent.com/iury-repo/health_insurance_cs/main/reports/figures/class_distrib.png" width="300" align='center' class="center"/>
+
+</td>
+</tr>
+</table> 
+
+**<ins>Data Preparation:</ins>** 
+ - 1.0. Feature Engineering: After some testing, we decide to not add new combined features in this CRISP cycle. At some point it was created a new feature with the goal of express if regional and damage information could be combined to a sort of risk indication feature. Unfortunately, after EDA we found that this new feature don't bring any explainability and the single features are suffice. As we don't have acess to a source of new data the only actions taken for engineering was the follow:
+   - Change strings of the categorical features to snakecase.
+   - Changes the classes names of the `vehicle_damage` column to achieve more clarity. 
+ - 2.0. Encoding: To the `gender` and `vehicle_age` features was applied **One-Hot Encoding**. To the `region_code` feature was applied the James Stein Encoder, a target encoder that has the advantage to regularize automatically based on the estimation of the variance within categories (more information in the reference X).   
 
 
 ## Useful Insights
