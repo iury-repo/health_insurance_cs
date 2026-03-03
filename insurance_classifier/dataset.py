@@ -3,39 +3,19 @@ from pathlib import Path
 import joblib
 import pandas as pd
 
-# app = typer.Typer()
-
-
-# @app.command()
-# def main(
-#     # ---- REPLACE DEFAULT PATHS AS APPROPRIATE ----
-#     input_path: Path = RAW_DATA_DIR / "dataset.csv",
-#     output_path: Path = PROCESSED_DATA_DIR / "dataset.csv",
-#     # ----------------------------------------------
-# ):
-#     # ---- REPLACE THIS WITH YOUR OWN CODE ----
-#     logger.info("Processing dataset...")
-#     for i in tqdm(range(10), total=10):
-#         if i == 5:
-#             logger.info("Something happened for iteration 5.")
-#     logger.success("Processing dataset complete.")
-#     # -----------------------------------------
-
-
-# if __name__ == "__main__":
-#     app()
+from insurance_classifier.config import ROOT_DIR
 
 
 class DataPreprocessor(object):
 
     def __init__(self, config):
         self.config = config
-        base_path = Path(config['paths']['parameters_dir'])
+        parameters_path = Path(ROOT_DIR / config['paths']['parameters_dir'])
 
-        self.age_scaler =                   joblib.load(base_path / config['artifacts']['age_scaler']) 
-        self.annual_premium_scaler =        joblib.load(base_path / config['artifacts']['annual_premium_scaler'])
-        self.vintage_scaler =               joblib.load(base_path / config['artifacts']['vintage_scaler'])
-        self.region_code_encoder =          joblib.load(base_path / config['artifacts']['region_code_encoder'])               
+        self.age_scaler =                   joblib.load(parameters_path / config['artifacts']['age_scaler']) 
+        self.annual_premium_scaler =        joblib.load(parameters_path / config['artifacts']['annual_premium_scaler'])
+        self.vintage_scaler =               joblib.load(parameters_path / config['artifacts']['vintage_scaler'])
+        self.region_code_encoder =          joblib.load(parameters_path / config['artifacts']['region_code_encoder'])               
         
     def feature_engineering(self, df):  
           
