@@ -5,7 +5,7 @@ paths:
   model_dir: models/
 
 model:
-  type: XGBoost
+  type: xgboost
   params:
     n_estimators: 654
     max_depth: 10

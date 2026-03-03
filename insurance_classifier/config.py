@@ -12,6 +12,10 @@ def project_root(marker="pyproject.toml"):
 
 ROOT_DIR = project_root()
 
+MODELS_DIR = ROOT_DIR / "models"
+RAW_DATA_DIR = ROOT_DIR / "data" / "raw"
+PROCESSED_DATA_DIR = ROOT_DIR / "data" / "processed"
+
 def load_yaml_config(config_file: str) -> dict:
     config_path = ROOT_DIR / "config" / config_file
     
