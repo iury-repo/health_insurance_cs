@@ -4,18 +4,6 @@ paths:
   processed_data: data/processed/
   model_dir: models/
 
-model:
-  type: xgboost
-  params:
-    n_estimators: 654
-    max_depth: 10
-    learning_rate: 0.0928676578481242
-    max_leaves: 100
-    subsample: 0.6843881044357649
-    colsample_bytree: 0.9698823594112738
-    gamma: 0.979678428177832
-    min_child_weight: 6.951405780464861
-
 artifacts:
   age_scaler: age_scaler.joblib
   annual_premium_scaler: annual_premium_scaler.joblib
