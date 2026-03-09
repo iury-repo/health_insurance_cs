@@ -3,14 +3,15 @@ from pathlib import Path
 import joblib
 import pandas as pd
 
-from insurance_classifier.config import ROOT_DIR
+from insurance_classifier.config import load_yaml_config
 
+config = load_yaml_config('config/base.yaml')
 
 class DataPreprocessor(object):
 
     def __init__(self, config):
         self.config = config
-        parameters_path = Path(ROOT_DIR / config['paths']['parameters_dir'])
+        parameters_path = Path(config['paths']['parameters_dir'])
 
         self.age_scaler =                   joblib.load(parameters_path / config['artifacts']['age_scaler']) 
         self.annual_premium_scaler =        joblib.load(parameters_path / config['artifacts']['annual_premium_scaler'])
