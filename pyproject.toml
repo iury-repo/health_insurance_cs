@@ -44,6 +44,8 @@ dependencies = [
 ]
 requires-python = "~=3.10.0"
 
+[project.scripts]
+insurance-train = "insurance_classifier.modeling.cli:app"
 
 [tool.ruff]
 line-length = 99
