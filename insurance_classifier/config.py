@@ -1,26 +1,15 @@
+from ast import Dict
 from pathlib import Path
+from typing import Any, Dict
 
 import yaml
 
 
-def project_root(marker="pyproject.toml"):
-    current = Path.cwd().resolve()
-    for parent in [current] + list(current.parents):
-        if (parent / marker).exists():
-            return parent
-    raise RuntimeError("Project root not found.")
-
-ROOT_DIR = project_root()
-
-MODELS_DIR = ROOT_DIR / "models"
-RAW_DATA_DIR = ROOT_DIR / "data" / "raw"
-PROCESSED_DATA_DIR = ROOT_DIR / "data" / "processed"
-
-def load_yaml_config(config_file: str) -> dict:
-    config_path = ROOT_DIR / "config" / config_file
+def load_yaml_config(config_path:str) -> Dict[str, Any]:
+    config = Path(config_path).resolve()
     
-    if not config_path.exists():
-        raise FileNotFoundError(f"Config .yaml not found: {config_path}")
+    if not config.exists():
+        raise FileNotFoundError(f"Config .yaml not found in {config}")
     
     with open(config_path, "r") as f:
         return yaml.safe_load(f)
