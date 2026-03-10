@@ -9,3 +9,4 @@ model:
     colsample_bytree: 0.9698823594112738
     gamma: 0.979678428177832
     min_child_weight: 6.951405780464861
+    verbosity: 1
