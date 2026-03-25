@@ -24,11 +24,11 @@ Given this scenario, the CEO initiated a data science project to better guide de
 
 Last year, when clients subscribe for health insurance, a survey was taken as part of the cross-sell campaign. The survey was made prioritizing relevant vehicle information to the insurance process like number of vehicles, age, driving license, if client vehicle's was damaged at some point in the past, how old are the vehicle, etc... And the dataset that will be used in this project is the result of the information collected in this surveys.
 
-The strategy to propose a solution through machine learn was guided by the reliable CRISP-DM method and the first cycle of development was taken as follow:
+The strategy to propose a solution through machine learn was guided by the reliable CRISP-DM method, with the first cycle of development taken as follow:
 
-**<ins>Business understanding:</ins>** Was fairly discussed in the topic above, so we'll skip this CRISP step for the moment. Feel free to take a look on Business Problem before we proceed.
+**<ins>Business Understanding:</ins>** Was fairly discussed in the topic above, so we'll skip this CRISP step for the moment. Feel free to take a look on Business Problem before we proceed.
 
-**<ins>Data understanding:</ins>** 
+**<ins>Data Understanding:</ins>** 
 
 - **Data Description:** For this project, the dataset was obtained locally via download on the Kaggle page, but as a standard first step, we would extract the data using SQL in a server database or cloud service. The dataset structure is as follows:
 
@@ -55,7 +55,6 @@ With 381109 rows 0 missing values.
 
 Looking at the response distribution we can immediately notice that the dataset is highly imbalanced, with only 12.3% of the responses being positive (class 1). So to deal with this imbalance, it was necessary treat those problems before we get to the modeling step.
 
-
 </td>
 <td width="35%" valign="top">
 
@@ -73,6 +72,8 @@ Looking at the response distribution we can immediately notice that the dataset 
 
 
 ## Useful Insights
+
+
 
 ## Models Utilized
 
