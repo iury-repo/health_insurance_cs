@@ -1,40 +1,43 @@
-import panda as pd
-import typer
-import uvicorn
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
 import joblib
+import uvicorn
 
 from pathlib import Path
-from loguru import logger
-from fastapi import FastAPI, HTTPException
-from contextlib import asynccontextmanager
-from app.schemas import PredictionRequest, PredictionResponse
-from insurance_classifier.modeling.config import load_yaml_config
+from app.schemas import PredictionRequest
+from insurance_classifier.config import load_yaml_config
+from insurance_classifier.modeling.predict import predict_request
+from insurance_classifier.pipeline import PreprocessingPipeline
+from app.preprocessing.features import feature_engineering
 
-
-
-base_path = "config/base.yaml"
-model_config = load_yaml_config(base_path)
+ml_model = {}
+model_config = load_yaml_config("config/base.yaml")
 
 # context manager (model load)
 @asynccontextmanager
 async def lifespan(app:FastAPI):
-    model = joblib.load(model_config["paths"]["model_dir"] + "/xgb_v01.joblib")
+    ml_model["xgb_v01"] = joblib.load(Path(model_config["paths"]["model_dir"]) / "xgb_v01.joblib")
+    ml_model["preprocessing"] = PreprocessingPipeline(model_config) 
     yield
-    model.clear()
+    ml_model.clear()
 
-app = FastAPI()
+app = FastAPI(title="Insurance Classifier API", 
+              version="v1", 
+              lifespan=lifespan)
 
-@app.get("/v1/health")
+@app.get("/health")
 async def health_check():
     return {"status": "ok"}
 
-@app.post("/v1/predict", response_model=PredictionRequest)
-def predict_request():
-    model.predict()
-    model.predict_proba()
-    return
+@app.post("/predict", response_model=PredictionRequest)
+def predict_endpoint(request: PredictionRequest):
+    model = ml_model["xgb_v01"]
+    pipeline = ml_model["preprocessing"]
+
+    return predict_request(model, request, pipeline=pipeline)
 
 
 if __name__ == "__main__":
-    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("app.main:app", host="0.0.0.0", port=8000)
 

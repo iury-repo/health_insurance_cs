@@ -1,30 +1,29 @@
-from pathlib import Path
+from app.schemas import PredictionRequest, PredictionResponse
+import pandas as pd
+import json
 
-from loguru import logger
-from tqdm import tqdm
-import typer
+from insurance_classifier.config import load_yaml_config
+from app.preprocessing.features import feature_engineering
 
-from insurance_classifier.config import MODELS_DIR, PROCESSED_DATA_DIR
+config = load_yaml_config('config/base.yaml')
 
-app = typer.Typer()
+def predict_request(model, data: PredictionRequest, pipeline):
+    df = pd.DataFrame(data.model_dump()["data"])
+    
+    # Preprocessing
 
+    df2 = pipeline.feature_engineering(df)
+    df3 = pipeline.data_preparation(df2)
 
-@app.command()
-def main(
-    # ---- REPLACE DEFAULT PATHS AS APPROPRIATE ----
-    features_path: Path = PROCESSED_DATA_DIR / "test_features.csv",
-    model_path: Path = MODELS_DIR / "model.pkl",
-    predictions_path: Path = PROCESSED_DATA_DIR / "test_predictions.csv",
-    # -----------------------------------------
-):
-    # ---- REPLACE THIS WITH YOUR OWN CODE ----
-    logger.info("Performing inference for model...")
-    for i in tqdm(range(10), total=10):
-        if i == 5:
-            logger.info("Something happened for iteration 5.")
-    logger.success("Inference complete.")
-    # -----------------------------------------
+    # Prediction
+    # preds = model.predict(df3)
+    probas = model.predict_proba(df3)[:,1]
 
+    results = [
+    {
+        "probability": float(proba)
+    }
+    for proba in zip(probas)
+    ]
 
-if __name__ == "__main__":
-    app()
+    return PredictionResponse(predictions=results)

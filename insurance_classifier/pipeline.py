@@ -13,6 +13,8 @@ class PreprocessingPipeline(object):
         self.config = config
         parameters_path = Path(config['paths']['parameters_dir'])
 
+        self.one_hot_encoder =              joblib.load(parameters_path / config['artifacts']['one_hot_encoder'])
+        self.policy_sales_channel_encoder = joblib.load(parameters_path / config['artifacts']['policy_sales_channel_encoder'])  
         self.age_scaler =                   joblib.load(parameters_path / config['artifacts']['age_scaler']) 
         self.annual_premium_scaler =        joblib.load(parameters_path / config['artifacts']['annual_premium_scaler'])
         self.vintage_scaler =               joblib.load(parameters_path / config['artifacts']['vintage_scaler'])
@@ -37,7 +39,9 @@ class PreprocessingPipeline(object):
 
     def data_preparation(self, df):
         # One-Hot encoding
-        df = pd.get_dummies(df, columns= ['gender'], prefix= 'gender', dtype=int)
+        df['gender'] = self.one_hot_encoder.transform(df[['gender']])
+        df['vehicle_age'] = self.one_hot_encoder.transform(df[['vehicle_age']])
+        # df[['gender', 'vehicle_age']] = self.one_hot_encoder.transform(df[['gender', 'vehicle_age']])
 
         # Target encoding (James-Stein) 
         df['region_code'] = self.region_code_encoder.transform(X= df[['region_code']])
@@ -45,12 +49,8 @@ class PreprocessingPipeline(object):
         # Label encoding
         df['vehicle_damage'] = df['vehicle_damage'].map({'yes':1,'no':0})
 
-        # One-Hot encoding
-        df = pd.get_dummies(df, columns= ['vehicle_age'], prefix= 'vehicle_age', dtype=int)
-
         # Frequency encoding
-        fe_policy_sales_channel = df['policy_sales_channel'].value_counts(normalize=True)
-        df['policy_sales_channel'] = df['policy_sales_channel'].map(fe_policy_sales_channel)
+        df['policy_sales_channel'] = self.policy_sales_channel_encoder.transform(df[['policy_sales_channel']])
 
         # Rescaling -----
         df['age'] = self.age_scaler.transform(df[['age']].values)
