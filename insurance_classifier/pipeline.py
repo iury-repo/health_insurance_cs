@@ -3,64 +3,119 @@ from pathlib import Path
 import joblib
 import pandas as pd
 
-from insurance_classifier.config import load_yaml_config
 
-config = load_yaml_config('config/base.yaml')
-
-class PreprocessingPipeline(object):
+class PreprocessingPipeline:
+    """Prepare incoming API payloads into the exact model feature matrix."""
 
     def __init__(self, config):
         self.config = config
-        parameters_path = Path(config['paths']['parameters_dir'])
+        parameters_path = Path(config["paths"]["parameters_dir"])
 
-        self.one_hot_encoder =              joblib.load(parameters_path / config['artifacts']['one_hot_encoder'])
-        self.policy_sales_channel_encoder = joblib.load(parameters_path / config['artifacts']['policy_sales_channel_encoder'])  
-        self.age_scaler =                   joblib.load(parameters_path / config['artifacts']['age_scaler']) 
-        self.annual_premium_scaler =        joblib.load(parameters_path / config['artifacts']['annual_premium_scaler'])
-        self.vintage_scaler =               joblib.load(parameters_path / config['artifacts']['vintage_scaler'])
-        self.region_code_encoder =          joblib.load(parameters_path / config['artifacts']['region_code_encoder'])               
-        
-    def feature_engineering(self, df):  
-          
-        # Change column names to snakecase
-        df.columns = [col.lower().replace(' ','_') for col in df.columns]
+        self.one_hot_encoder = joblib.load(
+            parameters_path / config["artifacts"]["one_hot_encoder"]
+        )
+        self.policy_sales_channel_encoder = joblib.load(
+            parameters_path / config["artifacts"]["policy_sales_channel_encoder"]
+        )
+        self.age_scaler = joblib.load(parameters_path / config["artifacts"]["age_scaler"])
+        self.annual_premium_scaler = joblib.load(
+            parameters_path / config["artifacts"]["annual_premium_scaler"]
+        )
+        self.vintage_scaler = joblib.load(parameters_path / config["artifacts"]["vintage_scaler"])
+        self.region_code_encoder = joblib.load(
+            parameters_path / config["artifacts"]["region_code_encoder"]
+        )
 
-        # Rename vehicle_age categories
-        df['vehicle_age'] = df['vehicle_age'].map({'> 2 Years': 'over_2_years',
-                                                            '1-2 Year': '1_to_2_years',
-                                                            '< 1 Year': 'under_1_year'
-                                                            })
+    @staticmethod
+    def _normalize_text(value):
+        if value is None:
+            return None
+        return str(value).strip().lower()
 
-        # Change string entries to snakecase
-        for col in df.select_dtypes(exclude=['int64','float64', 'datetime64[ns]']).columns:
-            df[col] = df[col].str.lower()
+    @staticmethod
+    def _to_snake_case_columns(df: pd.DataFrame) -> pd.DataFrame:
+        result = df.copy()
+        result.columns = [col.strip().lower().replace(" ", "_") for col in result.columns]
+        return result
+
+    def feature_engineering(self, df: pd.DataFrame) -> pd.DataFrame:
+        df = self._to_snake_case_columns(df)
+
+        vehicle_age_mapping = {
+            "> 2 years": "over_2_years",
+            "1-2 year": "1_to_2_years",
+            "< 1 year": "under_1_year",
+            "over_2_years": "over_2_years",
+            "1_to_2_years": "1_to_2_years",
+            "under_1_year": "under_1_year",
+        }
+
+        categorical_columns = ["gender", "vehicle_age", "vehicle_damage"]
+        for column in categorical_columns:
+            if column in df.columns:
+                df[column] = df[column].map(self._normalize_text)
+
+        if "vehicle_age" in df.columns:
+            df["vehicle_age"] = df["vehicle_age"].map(vehicle_age_mapping)
 
         return df
 
-    def data_preparation(self, df):
-        # One-Hot encoding
-        df['gender'] = self.one_hot_encoder.transform(df[['gender']])
-        df['vehicle_age'] = self.one_hot_encoder.transform(df[['vehicle_age']])
-        # df[['gender', 'vehicle_age']] = self.one_hot_encoder.transform(df[['gender', 'vehicle_age']])
+    def _validate_input_columns(self, df: pd.DataFrame) -> None:
+        required_columns = [
+            "gender",
+            "age",
+            "driving_license",
+            "region_code",
+            "previously_insured",
+            "vehicle_age",
+            "vehicle_damage",
+            "annual_premium",
+            "policy_sales_channel",
+            "vintage",
+        ]
+        missing_columns = [column for column in required_columns if column not in df.columns]
+        if missing_columns:
+            missing = ", ".join(missing_columns)
+            raise ValueError(f"Missing required columns: {missing}")
 
-        # Target encoding (James-Stein) 
-        df['region_code'] = self.region_code_encoder.transform(X= df[['region_code']])
+    def data_preparation(self, df: pd.DataFrame) -> pd.DataFrame:
+        self._validate_input_columns(df)
+        data = df.copy()
 
-        # Label encoding
-        df['vehicle_damage'] = df['vehicle_damage'].map({'yes':1,'no':0})
+        data["vehicle_damage"] = data["vehicle_damage"].map({"yes": 1, "no": 0, "1": 1, "0": 0})
 
-        # Frequency encoding
-        df['policy_sales_channel'] = self.policy_sales_channel_encoder.transform(df[['policy_sales_channel']])
+        one_hot_features = self.one_hot_encoder.transform(data[["gender", "vehicle_age"]])
+        one_hot_df = pd.DataFrame(
+            one_hot_features,
+            columns=self.one_hot_encoder.get_feature_names_out(["gender", "vehicle_age"]),
+            index=data.index,
+        )
 
-        # Rescaling -----
-        df['age'] = self.age_scaler.transform(df[['age']].values)
-        df['vintage'] = self.vintage_scaler.transform(df[['vintage']].values)
+        data["region_code"] = self.region_code_encoder.transform(data[["region_code"]]).iloc[:, 0]
+        freq_encoded = self.policy_sales_channel_encoder.transform(data)
+        data["policy_sales_channel"] = freq_encoded["policy_sales_channel"]
 
-        # Standardization -----
-        df['annual_premium'] = self.annual_premium_scaler.transform(df[['annual_premium']].values)
+        data["age"] = self.age_scaler.transform(data[["age"]].values).ravel()
+        data["vintage"] = self.vintage_scaler.transform(data[["vintage"]].values).ravel()
+        data["annual_premium"] = self.annual_premium_scaler.transform(
+            data[["annual_premium"]].values
+        ).ravel()
 
-        return df[self.config['features']['selected_features']]
-    
-    
-    
+        final_df = pd.concat([data, one_hot_df], axis=1)
+        expected_features = [
+            "age",
+            "driving_license",
+            "region_code",
+            "previously_insured",
+            "vehicle_damage",
+            "annual_premium",
+            "policy_sales_channel",
+            "vintage",
+            "gender_female",
+            "gender_male",
+            "vehicle_age_1_to_2_years",
+            "vehicle_age_over_2_years",
+            "vehicle_age_under_1_year",
+        ]
 
+        return final_df[expected_features]
