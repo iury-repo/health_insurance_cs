@@ -47,15 +47,13 @@ The strategy to propose a solution through machine learn was guided by the relia
 | Vintage               | Number of days the customer has been associated with the company           |
 | Response              | 1: Customer is interested, 0: Customer is not interested                   |
 
- With 381109 rows 0 missing values.
+With 381109 rows 0 missing values.
 
 <table >
 <tr>
 <td width="65%" valign="top">
 
 Looking at the response distribution we can immediately notice that the dataset is highly imbalanced, with only 12.3% of the responses being positive (class 1). So to deal with this imbalance, it was necessary treat those problems before we get to the modeling step.
-
-
 
 </td>
 <td width="35%" valign="top">

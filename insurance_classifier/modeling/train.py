@@ -1,30 +1,46 @@
 from pathlib import Path
 
+import joblib
 from loguru import logger
-from tqdm import tqdm
-import typer
+import pandas as pd
+from rich.progress import Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
 
-from insurance_classifier.config import MODELS_DIR, PROCESSED_DATA_DIR
-
-app = typer.Typer()
-
-
-@app.command()
-def main(
-    # ---- REPLACE DEFAULT PATHS AS APPROPRIATE ----
-    features_path: Path = PROCESSED_DATA_DIR / "features.csv",
-    labels_path: Path = PROCESSED_DATA_DIR / "labels.csv",
-    model_path: Path = MODELS_DIR / "model.pkl",
-    # -----------------------------------------
-):
-    # ---- REPLACE THIS WITH YOUR OWN CODE ----
-    logger.info("Training some model...")
-    for i in tqdm(range(10), total=10):
-        if i == 5:
-            logger.info("Something happened for iteration 5.")
-    logger.success("Modeling training complete.")
-    # -----------------------------------------
+from insurance_classifier.config import load_yaml_config
+from insurance_classifier.modeling.build_model import build_model
 
 
-if __name__ == "__main__":
-    app()
+def train_model(base_config: str, model_config: str, model_version: str):
+    # Load config files
+    b_config = load_yaml_config(base_config)
+    m_config = load_yaml_config(model_config)
+
+    # Load training data
+    try:
+        X_train = pd.read_csv(b_config['paths']['processed_data'] + '/X_train.csv')
+    except Exception as e:
+        logger.error(e)
+        raise
+    try:
+        y_train = pd.read_csv(b_config['paths']['processed_data'] + '/y_train.csv').values.ravel()
+    except Exception as e:
+        logger.error(e)
+        raise   
+
+    # Build model
+    model = build_model(m_config)
+
+    # Train model
+    with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), TimeElapsedColumn(), transient=True,) as progress:
+        task = progress.add_task("Training model...", total=None)
+
+        model.fit(X_train, y_train)
+
+        progress.remove_task(task)
+
+    # Save model
+    model_dir = Path(b_config['paths']['model_dir'])
+    model_path = model_dir / f"{m_config['model']['type']}_{model_version}.joblib"
+
+    joblib.dump(model, model_path)
+
+    logger.success(f"Training finished. Model saved to {model_path}")

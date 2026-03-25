@@ -1,30 +1,15 @@
-from pathlib import Path
-
-from loguru import logger
-from tqdm import tqdm
-import typer
-
-from insurance_classifier.config import MODELS_DIR, PROCESSED_DATA_DIR
-
-app = typer.Typer()
+from app.schemas import PredictionRequest, PredictionResponse
+import pandas as pd
 
 
-@app.command()
-def main(
-    # ---- REPLACE DEFAULT PATHS AS APPROPRIATE ----
-    features_path: Path = PROCESSED_DATA_DIR / "test_features.csv",
-    model_path: Path = MODELS_DIR / "model.pkl",
-    predictions_path: Path = PROCESSED_DATA_DIR / "test_predictions.csv",
-    # -----------------------------------------
-):
-    # ---- REPLACE THIS WITH YOUR OWN CODE ----
-    logger.info("Performing inference for model...")
-    for i in tqdm(range(10), total=10):
-        if i == 5:
-            logger.info("Something happened for iteration 5.")
-    logger.success("Inference complete.")
-    # -----------------------------------------
+def predict_request(model, data: PredictionRequest, pipeline):
+    df = pd.DataFrame(data.model_dump()["data"])
 
+    engineered_df = pipeline.feature_engineering(df)
+    prepared_df = pipeline.data_preparation(engineered_df)
 
-if __name__ == "__main__":
-    app()
+    probabilities = model.predict_proba(prepared_df)[:, 1]
+
+    return PredictionResponse(
+        predictions=[{"probability": float(probability)} for probability in probabilities]
+    )

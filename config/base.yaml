@@ -1,0 +1,25 @@
+paths:
+  parameters_dir: parameters/  
+  raw_data: data/raw/
+  processed_data: data/processed/
+  model_dir: models/
+
+artifacts:
+  one_hot_encoder: one_hot_encoder.joblib
+  policy_sales_channel_encoder: policy_sales_channel_count_frequency.joblib
+  age_scaler: age_scaler.joblib
+  annual_premium_scaler: annual_premium_scaler.joblib
+  vintage_scaler: vintage_scaler.joblib
+  region_code_encoder: region_code_james_stein.joblib
+
+features:
+  target: response
+  selected_features:
+    - vintage
+    - annual_premium
+    - age
+    - region_code
+    - vehicle_damage
+    - policy_sales_channel
+    - previously_insured
+
