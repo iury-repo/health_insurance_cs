@@ -534,6 +534,22 @@ wheels = [
 ]
 
 [[package]]
+name = "feature-engine"
+version = "1.9.4"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy" },
+    { name = "pandas" },
+    { name = "scikit-learn" },
+    { name = "scipy" },
+    { name = "statsmodels" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/2b/9d/802c7c4a3f1b8a988e7370b377f426eba7e5ed51a42019973a8063ea5532/feature_engine-1.9.4.tar.gz", hash = "sha256:4ee817b9a557f9670636deb417689645e54fc2391c2f14fbe0ef4f185fd1ab17", size = 150914, upload-time = "2026-02-27T13:47:20.883Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5c/92/698f823c1e0a4affe75d8dc6685639b82c65241bdda1f04f6a69fd162119/feature_engine-1.9.4-py3-none-any.whl", hash = "sha256:a1181dcb25fc906cc74dd4f2947c49a71012a727d30a4505f2418419c83ace9e", size = 243548, upload-time = "2026-02-27T13:47:19.457Z" },
+]
+
+[[package]]
 name = "fonttools"
 version = "4.59.2"
 source = { registry = "https://pypi.org/simple" }
@@ -672,6 +688,7 @@ dependencies = [
     { name = "boruta" },
     { name = "category-encoders" },
     { name = "fastapi", extra = ["standard"] },
+    { name = "feature-engine" },
     { name = "imbalanced-learn" },
     { name = "ipython" },
     { name = "joblib" },
@@ -702,6 +719,7 @@ requires-dist = [
     { name = "boruta", specifier = ">=0.4.3" },
     { name = "category-encoders", specifier = ">=2.8.1" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.135.1" },
+    { name = "feature-engine", specifier = ">=1.9.4" },
     { name = "imbalanced-learn", specifier = ">=0.14.0" },
     { name = "ipython" },
     { name = "joblib", specifier = ">=1.5.2" },

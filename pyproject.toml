@@ -19,6 +19,7 @@ dependencies = [
     "boruta>=0.4.3",
     "category-encoders>=2.8.1",
     "fastapi[standard]>=0.135.1",
+    "feature-engine>=1.9.4",
     "imbalanced-learn>=0.14.0",
     "ipython",
     "joblib>=1.5.2",
