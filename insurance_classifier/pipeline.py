@@ -92,7 +92,27 @@ class PreprocessingPipeline:
         )
 
         data["region_code"] = self.region_code_encoder.transform(data[["region_code"]]).iloc[:, 0]
-        freq_encoded = self.policy_sales_channel_encoder.transform(data)
+
+        frequency_encoder_features = list(
+            getattr(self.policy_sales_channel_encoder, "feature_names_in_", [])
+        )
+        if not frequency_encoder_features:
+            frequency_encoder_features = [
+                "gender",
+                "age",
+                "driving_license",
+                "region_code",
+                "previously_insured",
+                "vehicle_age",
+                "vehicle_damage",
+                "annual_premium",
+                "policy_sales_channel",
+                "vintage",
+            ]
+
+        freq_encoded = self.policy_sales_channel_encoder.transform(
+            data[frequency_encoder_features]
+        )
         data["policy_sales_channel"] = freq_encoded["policy_sales_channel"]
 
         data["age"] = self.age_scaler.transform(data[["age"]].values).ravel()
